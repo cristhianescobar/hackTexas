@@ -154,6 +154,7 @@ int main(int argc, char* argv[])
 	while(1){
 		//store image to matrix
 		capture.read(cameraFeed);
+		cv::flip(cameraFeed, cameraFeed,1);
 		//convert frame from BGR to HSV colorspace
 		cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
 		//filter HSV image between values and store filtered image to
