@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <highgui.h>
 #include <opencv2/opencv.hpp>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 
 using namespace cv;
 
@@ -132,6 +134,15 @@ int main(int argc, char* argv[])
 	//program
     bool trackObjects = true;
     bool useMorphOps = true;
+
+    //Dispaly pointer to monitor
+    Display *displayMain = XOpenDisplay(NULL);
+    if(displayMain == NULL)
+    {
+    	fprintf(stderr, "Can't open Dispaly\n");
+    	exit(EXIT_FAILURE);
+    }
+
 	//Matrix to store each frame of the webcam feed
 	Mat cameraFeed;
 	//matrix storage for HSV image
@@ -167,8 +178,12 @@ int main(int argc, char* argv[])
 		//pass in thresholded frame to our object tracking function
 		//this function will return the x and y coordinates of the
 		//filtered object
-		if(trackObjects)
+		if(trackObjects){
 			trackFilteredObject(x,y,threshold,cameraFeed);
+			XWarpPointer(displayMain, None, None, 0, 0, 0, 0, x, y);}
+
+
+		
 
 		imshow(windowName,cameraFeed);
 		
@@ -176,7 +191,7 @@ int main(int argc, char* argv[])
    		if( c == 27) break;
 	}
 
-
+	XCloseDisplay(displayMain);
 
 
 
